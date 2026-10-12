@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A1 — تعلّم الإنجليزية</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#FFB703"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#E8F1FB;--card:#fff;--ink:#12263F;--mut:#5C6F86;--acc:#FFB703;--accd:#D48F00;--ok:#1F9D4A;--bad:#D93B43;--line:#BFD1E6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1A2C;--card:#17283F;--ink:#EAF2FB;--mut:#9DB0C8;--line:#2B4160}}
+:root[data-theme="dark"]{--bg:#0E1A2C;--card:#17283F;--ink:#EAF2FB;--mut:#9DB0C8;--line:#2B4160}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:'Cairo',system-ui,sans-serif}
+#app{max-width:480px;margin:0 auto;padding:18px 16px 40px}
+h1{font-size:30px;font-weight:900;margin:8px 0 2px}
+.sub{color:var(--mut);margin:0 0 12px}
+.bar{flex:1;height:12px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--ok);border-radius:9px;transition:width .4s}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:18px 0}
+.lv{font:inherit;color:var(--ink);background:var(--card);border:2px solid var(--line);border-bottom-width:5px;border-radius:20px;padding:14px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer}
+.lv b{font-size:34px;font-weight:900;line-height:1.1}
+.lv span{font-size:14px;color:var(--mut)}
+.lv.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--card))}
+.lv.cur{border-color:var(--acc);border-bottom-color:var(--accd)}
+.lv:disabled{opacity:.45;cursor:not-allowed}
+.pass{background:var(--acc);color:#12263F;font-weight:900;text-align:center;padding:14px;border-radius:16px;margin-bottom:12px}
+.lnk{font:inherit;background:none;border:0;color:var(--mut);text-decoration:underline;cursor:pointer;display:block;margin:10px auto}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.x{font:inherit;font-size:20px;background:none;border:0;color:var(--mut);cursor:pointer;padding:4px 8px}
+.h{color:var(--bad);font-size:20px;white-space:nowrap}.h s{opacity:.25;text-decoration:none}
+.q{font-size:20px;font-weight:700;margin:0 0 14px}
+.ar{font-size:26px;font-weight:900;margin:0 0 16px}
+.hint{color:var(--mut);margin:12px 0}
+.mt{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mt>div{display:flex;flex-direction:column;gap:10px}
+.c,.w{font:inherit;font-weight:700;font-size:18px;color:var(--ink);background:var(--card);border:2px solid var(--line);border-bottom-width:5px;border-radius:14px;padding:12px 8px;cursor:pointer}
+.c.en{direction:ltr}
+.c.sel{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 22%,var(--card))}
+.c.done{border-color:var(--ok);opacity:.5}
+.ans{min-height:62px;border-bottom:2px solid var(--line);display:flex;flex-wrap:wrap;gap:8px;padding:6px 0;margin-bottom:18px}
+.bank{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.w:disabled{visibility:hidden}
+.les{display:flex;flex-direction:column;gap:10px;margin:14px 0}.les .c{text-align:start;font-size:17px;font-weight:400}.les small{color:var(--mut)}
+.spk{font:inherit;font-weight:700;font-size:18px;background:var(--card);color:var(--ink);border:2px solid var(--line);border-bottom-width:5px;border-radius:16px;padding:14px 20px;cursor:pointer}
+#in{width:100%;font:inherit;font-size:20px;padding:12px 14px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--ink);margin-bottom:16px}
+.go{font:inherit;font-weight:900;font-size:19px;width:100%;background:var(--acc);color:#12263F;border:0;border-bottom:5px solid var(--accd);border-radius:16px;padding:13px;cursor:pointer;margin-top:6px}
+.go:active{transform:translateY(3px);border-bottom-width:2px}
+.msg{padding:12px 14px;border-radius:14px;font-weight:700;margin-top:14px}
+.msg.good{background:color-mix(in srgb,var(--ok) 20%,var(--card));color:var(--ok)}
+.msg.bad{background:color-mix(in srgb,var(--bad) 18%,var(--card));color:var(--bad)}
+.msg bdi{direction:ltr;display:inline-block}
+button:focus-visible,#in:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const M=p=>({k:'m',p}),B=(ar,en,x)=>({k:'b',ar,en,x}),D=(en,ar)=>({k:'d',en,ar});
+const L=[
+{n:'التحيات',s:[M([['hello','مرحبا'],['goodbye','مع السلامة'],['thanks','شكرا'],['please','من فضلك']]),M([['yes','نعم'],['no','لا'],['sorry','آسف'],['welcome','أهلا بك']])]},
+{n:'كلمات أولى',s:[D('apple','تفاحة'),D('water','ماء'),D('book','كتاب'),D('house','بيت')]},
+{n:'جمل بسيطة',s:[B('أنا طالب','I am a student','he'),B('هذا كتاب','this is a book','red'),B('هي معلمة','she is a teacher','am')]},
+{n:'الطعام',s:[M([['bread','خبز'],['milk','حليب'],['rice','أرز'],['tea','شاي']]),M([['egg','بيضة'],['meat','لحم'],['fish','سمكة'],['salt','ملح']])]},
+{n:'أنا أحب',s:[B('أنا أحب الماء','I like water','is'),B('هو لديه سيارة','he has a car','am'),B('نحن أصدقاء','we are friends','is')]},
+{n:'عبارات يومية',s:[D('good morning','صباح الخير'),D('thank you','شكرا لك'),D('how are you','كيف حالك'),D('see you','أراك لاحقا')]},
+{n:'العائلة',s:[M([['mother','أم'],['father','أب'],['brother','أخ'],['sister','أخت']]),M([['son','ابن'],['daughter','ابنة'],['uncle','عم'],['friend','صديق']])]},
+{n:'أين الأشياء',s:[B('الكتاب على الطاولة','the book is on the table','in'),B('هم في البيت','they are at home','is'),B('أمي سعيدة','my mother is happy','are')]},
+{n:'اكتب جملة',s:[D('i like tea','أنا أحب الشاي'),D('she is my sister','هي أختي'),D('the door is open','الباب مفتوح')]},
+{n:'تحدي A1',s:[M([['red','أحمر'],['blue','أزرق'],['green','أخضر'],['black','أسود']]),B('السماء زرقاء','the sky is blue','red'),D('good night','تصبح على خير')]}
+];
+const $=s=>document.querySelector(s),A=$('#app');
+let done=0,S,ex=0;
+try{done=+localStorage.getItem('a1')||0;ex=+localStorage.getItem('a1x')||0}catch(e){}
+const save=()=>{try{localStorage.setItem('a1',done)}catch(e){}};
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+let VO=[];const loadV=()=>{try{VO=speechSynthesis.getVoices()}catch(e){}};try{loadV();speechSynthesis.onvoiceschanged=loadV}catch(e){}
+const note=m=>{let n=$('#note');if(!n){n=document.createElement('div');n.id='note';n.className='msg bad';A.prepend(n)}n.textContent=m};
+const speak=t=>{
+ if(!('speechSynthesis' in window)||typeof SpeechSynthesisUtterance==='undefined')return note('الصوت غير مدعوم في هذا المتصفح. جرّب Chrome، وفي الـ APK سنستخدم صوت الجهاز مباشرة.');
+ try{const s=speechSynthesis;s.cancel();if(s.resume)s.resume();const u=new SpeechSynthesisUtterance(t);u.lang='en-US';u.rate=.85;loadV();const v=VO.find(x=>/^en[-_]US/i.test(x.lang))||VO.find(x=>/^en/i.test(x.lang));if(v)u.voice=v;u.onerror=e=>{if(['interrupted','canceled','not-allowed'].includes(e.error))return;note('تعذّر تشغيل الصوت ('+e.error+'). تأكد من وجود صوت إنجليزي في الجهاز ومن مستوى الصوت.')};setTimeout(()=>s.speak(u),60)}catch(e){note('تعذّر تشغيل الصوت')}
+};
+const norm=s=>s.toLowerCase().replace(/[^a-z' ]/g,'').replace(/\s+/g,' ').trim();
+const mk=(c,t,f)=>{const b=document.createElement('button');b.className=c;b.textContent=t;b.onclick=f;return b};
+
+function map(){
+ A.innerHTML=`<h1>المستوى A1</h1><p class=sub>أنجز ${done} من ${L.length} مستويات لتجتاز A1</p><div class=bar><i style="width:${done/L.length*100}%"></i></div><div class=grid>${L.map((l,i)=>`<button class="lv ${i<done?'ok':i==done?'cur':''}" ${i>done?'disabled':''} onclick="start(${i})"><b>${i+1}</b><span>${l.n}</span></button>`).join('')}</div>${done>=L.length?(ex?'<div class=pass>🎓 اجتزت A1 — المرحلة A2 مفتوحة (قريباً)</div>':'<button class=go onclick="exam()">اختبار A1 النهائي</button><p class=sub>8 أسئلة بدون إعادة. تحتاج 80% لفتح A2.</p>'):'<p class=sub>أنهِ المستويات العشرة لتفتح الاختبار النهائي.</p>'}<button class=lnk onclick="reset()">إعادة التقدم من الصفر</button>`;
+}
+function reset(){done=0;ex=0;try{localStorage.removeItem('a1x')}catch(e){}save();map()}
+const LS={0:{t:'درس: التحيات والكلمات الأولى',p:[['hello','مرحبا','Hello, how are you?'],['thank you','شكرا لك','Thank you very much'],['please','من فضلك','Water, please'],['I am …','أنا …','I am a student']]},5:{t:'درس: الجمل والعائلة',p:[['I like …','أنا أحب …','I like tea'],['he / she is …','هو / هي …','She is my sister'],['this is …','هذا …','This is a book'],['my mother','أمي','My mother is happy']]}};
+function start(i,skip){S={i,k:0,h:3};LS[i]&&!skip?lesson(i):step()}
+function lesson(i){const l=LS[i];A.innerHTML=`<h1>${l.t}</h1><p class=sub>اقرأ ثم اضغط على أي عبارة لتسمعها.</p><div class=les>${l.p.map(p=>`<button class=c data-s="${p[2]}"><b dir=ltr>${p[0]}</b> = ${p[1]}<br><small dir=ltr>${p[2]}</small></button>`).join('')}</div><button class=go onclick="step()">ابدأ المستوى ${i+1}</button><button class=lnk onclick="map()">الخريطة</button>`;document.querySelectorAll('.les button').forEach(b=>b.onclick=()=>speak(b.dataset.s))}
+function exam(){
+ const pool=L.flatMap(l=>l.s),ms=sh(pool.filter(s=>s.k=='m')).slice(0,2),o=sh(pool.filter(s=>s.k!='m')).slice(0,6);
+ S={i:0,k:0,h:3,x:1,miss:0,xs:sh([...ms,...o])};step();
+}
+function fin(){
+ const t=S.xs.length,sc=t-S.miss,p=sc/t>=.8;
+ if(p){ex=1;try{localStorage.setItem('a1x',1)}catch(e){}}
+ A.innerHTML=`<h1>${p?'نجحت! 🎓':'لم تجتز بعد'}</h1><p class=sub>نتيجتك ${sc} من ${t}. الحد الأدنى للنجاح 80%.</p>${p?'<div class=pass>تم فتح المرحلة A2</div>':'<p>راجع الدروس والمستويات ثم أعد الاختبار بأسئلة جديدة.</p>'}<button class=go onclick="${p?'map()':'exam()'}">${p?'الخريطة':'أعد الاختبار'}</button>${p?'':'<button class=lnk onclick="map()">الخريطة</button>'}`;
+}
+function hearts(){$('.h').innerHTML=S.x?'اختبار':'♥'.repeat(S.h)+'<s>'+'♥'.repeat(3-S.h)+'</s>'}
+function step(){
+ const ss=S.x?S.xs:L[S.i].s,st=ss[S.k];
+ if(!st)return S.x?fin():win();
+ A.innerHTML=`<div class=top><button class=x onclick="map()" aria-label="خروج">✕</button><div class=bar><i style="width:${S.k/ss.length*100}%"></i></div><div class=h></div></div><div id=g></div><div id=fb></div>`;
+ hearts();
+ ({m:gm,b:gb,d:gd})[st.k](st);
+}
+function ok(txt){
+ const go=$('.go');if(go)go.style.display='none';
+ $('#fb').innerHTML=`<div class="msg good">صحيح! ✓ ${txt?'<bdi>'+txt+'</bdi>':''}</div><button class=go onclick="S.k++;step()">التالي</button>`;
+ $('.go:last-child').focus();
+}
+function bad(a){
+ if(S.x){S.miss++;$('#fb').innerHTML='<div class="msg bad">إجابة خاطئة'+(a?' — الصحيح: <bdi>'+a+'</bdi>':'')+'</div>';document.querySelectorAll('#g button,#g input').forEach(e=>e.disabled=true);setTimeout(()=>{S.k++;step()},1600);return}
+ S.h--;if(S.h<=0)return lose();
+ hearts();$('#fb').innerHTML='<div class="msg bad">غير صحيح، حاول مرة أخرى</div>';
+}
+function lose(){A.innerHTML=`<h1>انتهت القلوب 💔</h1><p class=sub>لا بأس، أعد المحاولة.</p><button class=go onclick="start(S.i,1)">أعد المستوى</button><button class=lnk onclick="map()">الخريطة</button>`}
+function win(){
+ if(S.i===done){done++;save()}
+ const nx=S.i+1<L.length;
+ A.innerHTML=`<h1>أحسنت! 🎉</h1><p class=sub>أنهيت المستوى ${S.i+1} وبقي لك ${S.h} من 3 قلوب.</p><button class=go onclick="${nx?'start(S.i+1)':'map()'}">${nx?'المستوى التالي':'الخريطة'}</button><button class=lnk onclick="map()">الخريطة</button>`;
+}
+function gm(st){
+ let a=null,n=st.p.length;
+ $('#g').innerHTML='<p class=q>اربط كل كلمة بمعناها</p><div class=mt></div>';
+ const mt=$('.mt');
+ [0,1].forEach(ci=>{const d=document.createElement('div');sh(st.p).forEach(p=>{
+  const b=mk('c'+(ci?'':' en'),p[ci],()=>{
+   if(b.disabled)return;
+   if(!ci)speak(p[0]);
+   if(!a||a.ci===ci){a&&a.b.classList.remove('sel');a={b,ci,p};b.classList.add('sel');return}
+   if(a.p===p){[a.b,b].forEach(x=>{x.disabled=true;x.className+=' done'});a=null;if(!--n)ok()}
+   else{a.b.classList.remove('sel');a=null;bad()}
+  });d.appendChild(b)});mt.appendChild(d)});
+}
+function gb(st){
+ const bank=sh([...st.en.split(' '),...(st.x||'').split(' ').filter(Boolean)].map((w,i)=>({w,i})));
+ let ans=[];
+ $('#g').innerHTML=`<p class=q>ترجم الجملة</p><p class=ar>${st.ar}</p><div class=ans dir=ltr></div><div class=bank dir=ltr></div><button class=go>تحقق</button>`;
+ const an=$('.ans'),bk=$('.bank');
+ const draw=()=>{an.innerHTML='';bk.innerHTML='';
+  ans.forEach((x,j)=>an.appendChild(mk('w',x.w,()=>{ans.splice(j,1);draw()})));
+  bank.forEach(x=>{const b=mk('w',x.w,()=>{ans.push(x);speak(x.w);draw()});b.disabled=ans.includes(x);bk.appendChild(b)})};
+ draw();
+ $('.go').onclick=()=>{if(!ans.length)return;ans.map(x=>x.w).join(' ').toLowerCase()===st.en.toLowerCase()?ok(st.en):(ans=[],draw(),bad(st.en))};
+}
+function gd(st){
+ $('#g').innerHTML=`<p class=q>اكتب ما تسمعه</p><button class=spk>🔊 استمع</button><p class=hint>المعنى: ${st.ar}</p><input id=in dir=ltr autocomplete=off autocapitalize=off spellcheck=false aria-label="اكتب الكلمة"><button class=go>تحقق</button>`;
+ $('.spk').onclick=()=>speak(st.en);
+ const chk=()=>norm($('#in').value)===norm(st.en)?ok(st.en):(bad(st.en),$('#in')&&($('#in').value=''));
+ $('.go').onclick=chk;
+ $('#in').onkeydown=e=>{if(e.key==='Enter')chk()};
+ setTimeout(()=>speak(st.en),300);
+}
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
+map();
+</script>
+</body>
+</html>
