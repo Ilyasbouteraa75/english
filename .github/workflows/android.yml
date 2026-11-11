@@ -23,21 +23,21 @@ jobs:
       - name: Prepare web files
         run: |
           mkdir -p www
-          cp index.html ads.js www/
+          cp index.html ads.js tts.js www/
+          sed -i 's#<head>#<head><script src="tts.js"></script>#' www/index.html
           sed -i 's#</body>#<script src="ads.js"></script></body>#' www/index.html
 
-      - name: Add Capacitor and AdMob
+      - name: Add Capacitor and plugins
         run: |
           npm init -y
-          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 @capacitor-community/admob@6
+          npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6 @capacitor-community/admob@6 @capacitor-community/text-to-speech@5
           npx cap add android
           npx cap sync android
 
-      - name: Add AdMob test app id
+      - name: Add AdMob app id
         run: |
           M=android/app/src/main/AndroidManifest.xml
-          sed -i 's#</application>#<meta-data android:name="com.google.android.gms.ai.APPLICATION_ID_PLACEHOLDER" android:value="x"/></application>#' $M
-          sed -i 's#com.google.android.gms.ai.APPLICATION_ID_PLACEHOLDER#com.google.android.gms.ads.APPLICATION_ID#; s#android:value="x"#android:value="ca-app-pub-3940256099942544~3347511713"#' $M
+          sed -i 's#</application>#<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/></application>#' $M
 
       - name: Build APK
         working-directory: android
